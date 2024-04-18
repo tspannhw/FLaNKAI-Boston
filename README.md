@@ -7,7 +7,7 @@ Boston, MBTA, Postgresql, NiFi, Kafka, Flink, Iceberg, Data Summit
 https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${location:trim():urlEncode()}&benchmark=2020&format=json
 ````
 
-### Geocode Maps (requires API Key)
+### Geocode Maps (requires API Key from https://geocode.maps.co/ MapMaker)
 
 ````
 https://geocode.maps.co/search?q=${location:trim():urlEncode()}&api_key=APIKEY1234
