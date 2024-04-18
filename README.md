@@ -13,6 +13,24 @@ https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${loc
 https://geocode.maps.co/search?q=${location:trim():urlEncode()}&api_key=APIKEY1234
 ````
 
+### Address To Lat/Long Python Processor
+
+[https://github.com/tspannhw/FLaNKAI-Boston/blob/main/AddressToLatLong.py](https://github.com/tspannhw/FLaNKAI-Boston/blob/main/AddressToLatLong.py)
+
+
+````
+
+````
+We are using https://geopy.readthedocs.io/en/stable/#nominatim which is a Geocoder for a lot of different libraries.   We are using it to call Nominatim.
+
+
+[https://openstreetmap.org/copyright](https://openstreetmap.org/copyright)
+“OpenStreetMap” a link to openstreetmap.org/copyright,  which has information about OpenStreetMap’s data sources as well as the ODbL.
+
+[https://nominatim.openstreetmap.org/search?q=Lafayette+City+Center+Boston%2C+MA&format=json](https://nominatim.openstreetmap.org/search?q=Lafayette+City+Center+Boston%2C+MA&format=json)
+
+[https://nominatim.openstreetmap.org/ui/search.html](https://nominatim.openstreetmap.org/ui/search.html)
+ 
 ### Postgresql Calculate Distance
 
 ````
