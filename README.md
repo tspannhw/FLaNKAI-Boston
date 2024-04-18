@@ -1,7 +1,11 @@
 # FLaNKAI-Boston
 Boston, MBTA, Postgresql, NiFi, Kafka, Flink, Iceberg, Data Summit
 
+### Geocode from 2020 US Census
 
+````
+https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${location:trim():urlEncode()}&benchmark=2020&format=json
+````
 
 ### Postgresql Calculate Distance
 
@@ -39,6 +43,21 @@ from location_distance('42.353170', '-71.060710')
 
 ````
 select * from location_distance('${latitude}', '${longitude}')
+````
+
+### Slack Reply Template
+
+````
+Nearest Buses to ${location} (inside this geofenced box ${boundingbox})
+You are currently at a ${displayname} which is a ${addresstype} found at this location @ ${latitude}/${longitude}.
+This near by bus stop is ${distance} km(s) away.
+It is called ${stopname} @ ${stoplat}/${stoplon}.  [${stopdesc}]
+${stopurl}
+========Message: ${messagetext} from ${messagerealname} ${messageusername} @ ${messageusertz}
+========= Dates: ${date} TS: ${ts} KT: ${kafka.timestamp} 
+======== Parsed: Dates: ${dates} Events: ${events} Facs: ${facs} GPE: ${gpes} LOC: ${locs} MONEY: ${moneys}
+======== Parsed: ORG: ${orgs} PERSON: ${persons} PRODUCT: ${products} QUANTITY: ${quantities}
+=== OSM Details: ${osmclass} ${osmid} ${osmimportance} ${osmlicense} ${osmname} ${osmtype} ${place_id} ${placerank} ${locationtype}
 ````
 
 ### References
