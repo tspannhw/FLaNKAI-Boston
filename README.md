@@ -19,8 +19,16 @@ https://geocode.maps.co/search?q=${location:trim():urlEncode()}&api_key=APIKEY12
 
 
 ````
+        from geopy.geocoders import Nominatim
 
+        # Instantiate a new Nominatim client
+        app = Nominatim(user_agent="nifi-AddressToLatLong-nominatim")
+
+        parse_text = context.getProperty(self.PARSE_TEXT).evaluateAttributeExpressions(flowfile).getValue()
+
+        location = app.geocode(str(parse_text)).raw
 ````
+
 We are using https://geopy.readthedocs.io/en/stable/#nominatim which is a Geocoder for a lot of different libraries.   We are using it to call Nominatim.
 
 
@@ -30,6 +38,9 @@ We are using https://geopy.readthedocs.io/en/stable/#nominatim which is a Geocod
 [https://nominatim.openstreetmap.org/search?q=Lafayette+City+Center+Boston%2C+MA&format=json](https://nominatim.openstreetmap.org/search?q=Lafayette+City+Center+Boston%2C+MA&format=json)
 
 [https://nominatim.openstreetmap.org/ui/search.html](https://nominatim.openstreetmap.org/ui/search.html)
+
+[https://nominatim.org/release-docs/develop/api/Overview/](https://nominatim.org/release-docs/develop/api/Overview/)
+
  
 ### Postgresql Calculate Distance
 
