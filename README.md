@@ -35,6 +35,12 @@ select *
 from location_distance('42.353170', '-71.060710')
 ````
 
+### Execute SQL against Postgresql Function from NiFi
+
+````
+select * from location_distance('${latitude}', '${longitude}')
+````
+
 ### References
 
 * https://www.linkedin.com/pulse/lets-calculate-distance-postgresql-jhonatan-garcia/
