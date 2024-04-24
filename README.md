@@ -98,3 +98,5 @@ ${stopurl}
 ### References
 
 * https://www.linkedin.com/pulse/lets-calculate-distance-postgresql-jhonatan-garcia/
+* https://api-v3.mbta.com/routes
+* 
