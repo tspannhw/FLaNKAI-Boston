@@ -1,0 +1,225 @@
+<html>
+<head>
+<title>MBTA Transit Alerts</title>
+<link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<meta charset="UTF-8">
+<!-- include leaflet css and javascript -->
+<link rel="stylesheet" crossorigin="" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet-src.js" crossorigin=""></script>
+
+<style type="text/css">
+    #map {
+        height: 450px;
+    }
+</style>
+</head>
+<body bgcolor="white" text="black">
+
+<div style="font-size: 30; font-weight: bold; font-family: sans-serif;">
+    <p>
+        <strong><b>NiFi - MBTA - Transit Alerts</b></strong>
+     </p>
+</div>
+<br>
+
+<div id="map"></div>
+
+<script type="text/javascript">
+
+    const customerIcon =  L.icon({
+        iconUrl: "./images/icon-map-station-marker.png",
+        className: "image-icon",
+        iconSize: [20, 20]
+    });
+
+    const carIcon = L.icon({
+        iconUrl: "./images/icon-map-station-marker.png",
+        className: "image-icon",
+        iconSize: [30, 30]
+    });
+
+    var map = null;
+    var marker = null;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4){
+            var trainlocation = JSON.parse(xhr.responseText);
+
+            let i = 0;
+            if (map == null) {
+                map = L.map('map').setView([trainlocation[i].stop_lat, trainlocation[i].stop_lon], 14);
+                L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                let marker = new L.marker([trainlocation[i].stop_lat, trainlocation[i].stop_lon], { icon: customerIcon }).addTo(map);
+            }
+
+            i++;
+            while (i < trainlocation.length) {
+                marker = new L.marker([trainlocation[i].stop_lat, trainlocation[i].stop_lon], { icon: customerIcon }).addTo(map).bindPopup(' ' + trainlocation[i].route_long_name +
+                    ' @ ' + trainlocation[i].municipality + ' / ' + trainlocation[i].stop_name + 
+                     ' on '+ new Date(trainlocation[i].activeperiodstart * 1000) + ' - ' +
+                          trainlocation[i].alerttext + ':' + 
+                          trainlocation[i].cause  ).openPopup();
+
+                i++;
+            }
+        }
+
+    };
+
+    xhr.open('GET', 'http://localhost:9871/bostontransit');
+    xhr.send();
+</script>
+<br>
+<table id="transit1" class="display" style="width:100%; text-align:left;">
+        <thead>
+            <tr>
+                       <th valign="left"><b>Route(s)</b></th>
+                       <th valign="left"><b>Stop(s)</b></th>
+                       <th valign="left"><b>Route Name</b></th>
+                       <th valign="left"><b>Stop Name</b></th>
+                       <th valign="left"><b>On Street</b></th>
+                       <th valign="left"><b>At Street</b></th>
+                       <th valign="left"><b>Municipality</b></th>
+                       <th valign="left"><b>Cause</b></th>
+                       <th valign="left"><b>Alert</b></th>
+                       <th valign="left"><b>Active Period Start</b></th>
+                       <th valign="left"><b>Active Period End</b></th>
+                       <th valign="left"><b>Lat/Long</b></th>
+                       <th valign="left"><b>Stop url</b></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                       <th valign="left"><b>Route(s)</b></th>
+                       <th valign="left"><b>Stop(s)</b></th>
+                       <th valign="left"><b>Route Name</b></th>
+                       <th valign="left"><b>Stop Name</b></th>
+                       <th valign="left"><b>On Street</b></th>
+                       <th valign="left"><b>At Street</b></th>
+                       <th valign="left"><b>Municipality</b></th>
+                       <th valign="left"><b>Cause</b></th>
+                       <th valign="left"><b>Alert</b></th>
+                       <th valign="left"><b>Active Period Start</b></th>
+                       <th valign="left"><b>Active Period End</b></th>
+                       <th valign="left"><b>Lat/Long</b></th>
+                       <th valign="left"><b>Stop url</b></th>
+            </tr>
+        </tfoot>
+    </table>
+<script>
+function isEmpty(val){
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+$(document).ready(function() {
+    var t = $('#transit1').DataTable();
+
+$.getJSON('http://localhost:9871/bostontransit', 
+    function(data) {
+      $.each( data, function( key, val ) {
+
+        var RouteId= "";
+        if ( !isEmpty(data[key].routeid) ) {
+            RouteId = data[key].routeid;
+        }   
+        if ( !isEmpty(data[key].routeid2) ) {
+            RouteId = RouteId + ":" + data[key].routeid2;
+        }  
+        if ( !isEmpty(data[key].routeid3) ) {
+            RouteId = RouteId + ":" + data[key].routeid3;
+        }  
+        if ( !isEmpty(data[key].routeid4) ) {
+            RouteId = RouteId + ":" + data[key].routeid4;
+        }  
+        if ( !isEmpty(data[key].routeid5) ) {
+            RouteId = RouteId + ":" + data[key].routeid5;
+        } 
+        var StopId= "";
+        if ( !isEmpty(data[key].stopid) ) {
+            StopId = data[key].stopid;
+        }   
+        if ( !isEmpty(data[key].stopid2) ) {
+            StopId = StopId + ":" + data[key].stopid2;
+        }  
+        if ( !isEmpty(data[key].stopid3) ) {
+            StopId = StopId + ":" + data[key].stopid3;
+        }  
+        if ( !isEmpty(data[key].stopid4) ) {
+            StopId = StopId + ":" + data[key].stopid4;
+        }  
+        if ( !isEmpty(data[key].stopid5) ) {
+            StopId = StopId + ":" + data[key].stopid5;
+        }                     
+        var route_long_name= "";
+        if ( !isEmpty(data[key].route_long_name) ) {
+            route_long_name = data[key].route_long_name;
+        }
+        var stop_name= "";
+        if ( !isEmpty(data[key].stop_name) ) {
+            stop_name = data[key].stop_name;
+        }
+        var on_street= "";
+        if ( !isEmpty(data[key].on_street) ) {
+            on_street = data[key].on_street;
+        }
+        var at_street= "";
+        if ( !isEmpty(data[key].at_street) ) {
+            at_street = data[key].at_street;
+        }
+        var municipality = "";
+        if ( !isEmpty(data[key].municipality) ) {
+            municipality = data[key].municipality;
+        }
+        var cause = "";
+        if ( !isEmpty(data[key].cause) ) {
+            cause = data[key].cause;
+        }
+        var alerttext = "";
+        if ( !isEmpty(data[key].alerttext) ) {
+            alerttext = data[key].alerttext;
+        }  
+        var activeperiodstart = "";
+        if ( !isEmpty(data[key].activeperiodstart) ) {
+            activeperiodstart = new Date(data[key].activeperiodstart * 1000);
+        }                      
+        var latitude= "";
+        if ( !isEmpty(data[key].stop_lat) ) {
+            latitude = data[key].stop_lat;
+        }
+        var longitude= "";
+        if ( !isEmpty(data[key].stop_lon) ) {
+            longitude = data[key].stop_lon;
+        }
+        var activeperiodend= "";
+        if ( !isEmpty(data[key].activeperiodend) ) {
+            activeperiodend = new Date(data[key].activeperiodend * 1000);
+        }
+        var stop_url= "";
+        if ( !isEmpty(data[key].stop_url) ) {
+            stop_url = data[key].stop_url;
+        }
+
+        t.row.add( [ RouteId,StopId,route_long_name,stop_name,on_street,at_street, municipality, cause, alerttext, activeperiodstart, activeperiodend, (latitude + "," + longitude), stop_url ]).draw(true);
+      });
+    });
+}); 
+</script>
+<p>
+<br></p>
+<p><br></p><br>
+&copy; 2021-2022-2023-2024 Tim Spann @PaasDev - datainmotion.dev
+<br>           
+</body>
+</html>
