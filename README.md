@@ -95,6 +95,54 @@ ${stopurl}
 === OSM Details: ${osmclass} ${osmid} ${osmimportance} ${osmlicense} ${osmname} ${osmtype} ${place_id} ${placerank} ${locationtype}
 ````
 
+### Flink SQL Table - Kafka
+
+````
+CREATE TABLE `ssb`.`Meetups`.`mbtabostonvehicle` (
+  `currentstatus` VARCHAR(2147483647),
+  `route_id` VARCHAR(2147483647),
+  `bearing` VARCHAR(2147483647),
+  `directionid` VARCHAR(2147483647),
+  `scheduled` VARCHAR(2147483647),
+  `latitude` VARCHAR(2147483647),
+  `stopid` VARCHAR(2147483647),
+  `tripid` VARCHAR(2147483647),
+  `label` VARCHAR(2147483647),
+  `starttime` VARCHAR(2147483647),
+  `startdate` VARCHAR(2147483647),
+  `uuid` VARCHAR(2147483647),
+  `speed` VARCHAR(2147483647),
+  `recordid` VARCHAR(2147483647),
+  `currentstopsequence` VARCHAR(2147483647),
+  `gtfsurl` VARCHAR(2147483647),
+  `occupancypercentage` VARCHAR(2147483647),
+  `routeid` VARCHAR(2147483647),
+  `vehiclelabel` VARCHAR(2147483647),
+  `vehicleid` VARCHAR(2147483647),
+  `occupancystatus` VARCHAR(2147483647),
+  `carriagesequence` VARCHAR(2147483647),
+  `longitude` VARCHAR(2147483647),
+  `timestamp` VARCHAR(2147483647),
+  `ts` VARCHAR(2147483647),
+  `route_long_name` VARCHAR(2147483647),
+  `eventTimeStamp` TIMESTAMP(3) WITH LOCAL TIME ZONE METADATA FROM 'timestamp',
+  WATERMARK FOR `eventTimeStamp` AS `eventTimeStamp` - INTERVAL '3' SECOND
+) WITH (
+  'deserialization.failure.policy' = 'ignore_and_log',
+  'properties.request.timeout.ms' = '120000',
+  'format' = 'json',
+  'properties.bootstrap.servers' = 'kafka:9092',
+  'connector' = 'kafka',
+  'properties.transaction.timeout.ms' = '900000',
+  'topic' = 'mbta.bostonvehicle',
+  'scan.startup.mode' = 'group-offsets',
+  'properties.auto.offset.reset' = 'earliest',
+  'properties.group.id' = 'flinksqlmbtabostonveh'
+)
+
+````
+
+
 ### References
 
 * https://www.linkedin.com/pulse/lets-calculate-distance-postgresql-jhonatan-garcia/
