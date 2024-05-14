@@ -1,6 +1,28 @@
 # FLaNKAI-Boston
 Boston, MBTA, Postgresql, NiFi, Kafka, Flink, Iceberg, Data Summit
 
+### Postgresql setup
+
+````
+-- DROP FUNCTION public.location_distance(text, text);
+
+CREATE OR REPLACE FUNCTION public.location_distance(latitude text, longitude text)
+ RETURNS TABLE(distance text, stop_name text, stop_desc text, stop_lat text, stop_lon text, location_type text, stop_url text)
+ LANGUAGE sql
+AS $function$     
+     select to_char(float8 (point(cast($1 as float),cast($2 as float)) <@> point(stop_lat::float,stop_lon::float)), 'FM999999999.00') as distance,
+        stop_name, stop_desc, stop_lat, stop_lon, location_type, stop_url
+	 from mbtalookupstops m
+     order by to_char(float8 (point(cast($1 as float),cast($2 as float)) <@> point(stop_lat::float,stop_lon::float)), 'FM999999999.00') 
+     limit 5
+
+$function$
+;
+
+CREATE EXTENSION cube;
+CREATE EXTENSION earthdistance;
+````
+
 ### Geocode from 2020 US Census
 
 ````
